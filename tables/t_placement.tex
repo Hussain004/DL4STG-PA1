@@ -1,0 +1,12 @@
+\begin{tabular}{@{}p{2.7in}rrrrr@{}}
+\toprule
+\textbf{variant} & \textbf{seeds} & \textbf{5-fold RMSE} & \textbf{seed} & \textbf{last fold} & \textbf{parameters} \\
+ & & \textbf{(mean $\pm$ sd)} & \textbf{ensemble} & \textbf{(mean)} & \\
+\midrule
+Mean of the previous 168 steps (flat) & n/a & 98.1 & n/a & 95.8 & 0 \\
+Flat forecast told the true block mean (oracle) & n/a & 80.3 & n/a & 79.9 & 0 \\
+\midrule
+\textbf{Autoformer, no optional file (past $y$ only)} & \textbf{3} & \textbf{54.7 $\pm$ 0.3} & \textbf{54.3} & \textbf{53.8} & \textbf{1{,}823{,}698} \\
+\textbf{Autoformer, file over the 168 predicted steps} & \textbf{3} & \textbf{50.1 $\pm$ 0.1} & \textbf{50.1} & \textbf{45.1} & \textbf{32{,}524} \\
+\bottomrule
+\end{tabular}

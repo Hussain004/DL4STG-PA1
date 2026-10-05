@@ -1,0 +1,18 @@
+# LaTeX: the compiled PDF is committed, the build intermediates are not.
+# (report.aux is kept in the working tree but not tracked, so it does not
+# create merge noise between branches.)
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+
+# Large working directories: the per-step predictions of every training run.
+# They are regenerable with the experiments_*.sh scripts and the Q2_DATA data.
+runs/
+report_assets/

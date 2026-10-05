@@ -1,0 +1,15 @@
+\begin{tabular}{@{}p{3.1in}rrrrr@{}}
+\toprule
+\textbf{variant} & \textbf{seeds} & \textbf{5-fold} & \textbf{seed} & \textbf{last fold} & \textbf{parameters} \\
+ & & \textbf{ensemble} & \textbf{ensemble} & & \\
+\midrule
+\textbf{final configuration} & \textbf{3} & \textbf{50.1} & \textbf{50.1} & \textbf{45.1} & \textbf{32{,}524} \\
+no series decomposition & 3 & 50.7 & 50.7 & 47.8 & 32{,}491 \\
+point-wise attention instead of auto-correlation & 3 & 52.2 & 52.2 & 48.0 & 32{,}522 \\
+non-linear window read-out & 3 & 50.2 & 50.2 & 45.9 & 32{,}760 \\
+$+$ rank/quantile transform on A,B,C,E,F & 3 & 51.3 & 51.3 & 47.6 & 26{,}764 \\
+$+$ spike indicators for E and F & 3 & 50.6 & 50.6 & 46.1 & 33{,}964 \\
+encoder--decoder (cross-attention look-back) & 3 & 146.5 & 146.5 & 50.1 & 52{,}022 \\
+encoder--decoder, output clamped & 3 & 55.0 & 55.0 & 50.1 & 52{,}022 \\
+\bottomrule
+\end{tabular}

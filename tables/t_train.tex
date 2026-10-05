@@ -1,0 +1,13 @@
+\begin{tabular}{@{}p{2.7in}rrrrr@{}}
+\toprule
+\textbf{variant} & \textbf{seeds} & \textbf{5-fold RMSE} & \textbf{seed} & \textbf{last fold} & \textbf{parameters} \\
+ & & \textbf{(mean $\pm$ sd)} & \textbf{ensemble} & \textbf{(mean)} & \\
+\midrule
+\textbf{30 epochs, kernel 25 (baseline for this table)} & \textbf{5} & \textbf{61.6 $\pm$ 0.5} & \textbf{58.8} & \textbf{59.4} & \textbf{21{,}220} \\
+kernel 13 & 3 & 61.6 $\pm$ 0.5 & 60.1 & 58.4 & 21{,}220 \\
+kernel 49 & 3 & 61.3 $\pm$ 0.3 & 58.9 & 57.7 & 21{,}220 \\
+kernel 97 & 3 & 61.8 $\pm$ 0.2 & 59.9 & 58.8 & 21{,}220 \\
+60 epochs & 3 & 62.0 $\pm$ 0.2 & 59.2 & 59.3 & 21{,}220 \\
+\textbf{\textbf{15 epochs (final choice)}} & \textbf{5} & \textbf{60.8 $\pm$ 0.8} & \textbf{58.7} & \textbf{57.9} & \textbf{21{,}220} \\
+\bottomrule
+\end{tabular}

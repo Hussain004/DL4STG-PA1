@@ -1,0 +1,24 @@
+# member	trainable parameters	epochs
+fin_C1_l3k97_s0	40941	15
+fin_C1_l3k97_s1	40941	15
+fin_C1_l3k97_s2	40941	15
+fin_C1_l3k97_s3	40941	15
+fin_C1_l3k97_s4	40941	15
+fin_C2_l2k25_s0	32524	15
+fin_C2_l2k25_s1	32524	15
+fin_C2_l2k25_s2	32524	15
+fin_C2_l2k25_s3	32524	15
+fin_C2_l2k25_s4	32524	15
+fin_C3_e25_s0	32524	25
+fin_C3_e25_s1	32524	25
+fin_C3_e25_s2	32524	25
+fin_C3_e25_s3	32524	25
+fin_C3_e25_s4	32524	25
+fin_C4_l2k97_s0	32524	15
+fin_C4_l2k97_s1	32524	15
+fin_C4_l2k97_s2	32524	15
+fin_C4_l2k97_s3	32524	15
+fin_C4_l2k97_s4	32524	15
+TOTAL	692565	350
+MEMBERS	20
+SCORE_PENALTY	0.001385	0.175000

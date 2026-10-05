@@ -1,0 +1,15 @@
+# The submitted ensemble.  Four configurations chosen by greedy forward selection on the pooled
+# 5-fold CV of the archived runs (pick2.py), then rebuilt with 5 fresh seeds each in this harness.
+# They differ in depth (2 vs 3 blocks), the width of the decomposition's moving average (25 vs 97),
+# and the training length (15 vs 25 epochs) -- architecture and schedule diversity, which is what
+# makes the average better than any member.
+#
+# clamp=1 bounds the standardised output at the largest value the observed series implies.  It is
+# inert for this architecture (B4 reproduced `base` bit-for-bit) and exists only so a single diverging
+# run cannot poison the block.
+#
+# NAME  EPOCHS  STRIDE  key=value ...   [SEEDS=...]
+C1_l3k97  15 4 arch=enc clamp=1 spec=v1 win=6,24,168 gsum=1 bridge=1,2,6,12,24,48,168 bex=3 d=32 layers=3 dk=97 decomp=1 mixer=autocorr ow=2 drop=0.1 lr=1e-3 wd=1e-4 bs=128  SEEDS=0,1,2,3,4
+C2_l2k25  15 4 arch=enc clamp=1 spec=v1 win=6,24,168 gsum=1 bridge=1,2,6,12,24,48,168 bex=3 d=32 layers=2 dk=25 decomp=1 mixer=autocorr ow=2 drop=0.1 lr=1e-3 wd=1e-4 bs=128  SEEDS=0,1,2,3,4
+C3_e25    25 4 arch=enc clamp=1 spec=v1 win=6,24,168 gsum=1 bridge=1,2,6,12,24,48,168 bex=3 d=32 layers=2 dk=25 decomp=1 mixer=autocorr ow=2 drop=0.1 lr=1e-3 wd=1e-4 bs=128  SEEDS=0,1,2,3,4
+C4_l2k97  15 4 arch=enc clamp=1 spec=v1 win=6,24,168 gsum=1 bridge=1,2,6,12,24,48,168 bex=3 d=32 layers=2 dk=97 decomp=1 mixer=autocorr ow=2 drop=0.1 lr=1e-3 wd=1e-4 bs=128  SEEDS=0,1,2,3,4
