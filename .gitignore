@@ -1,6 +1,7 @@
 # LaTeX: the compiled PDF is committed, the build intermediates are not.
-# (report.aux is kept in the working tree but not tracked, so it does not
-# create merge noise between branches.)
+# report.aux stays in the working tree (LaTeX needs it to resolve cross-references
+# across passes) but is not tracked, so it creates no merge noise between branches.
+*.aux
 *.log
 *.out
 *.synctex.gz
