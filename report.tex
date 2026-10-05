@@ -1,7 +1,5 @@
 \documentclass[11pt,letterpaper]{article}
 
-%% ------------------------------------------------------------------ page geometry
-%% 0.6 in left and right, 0.8 in top and bottom, as specified.
 \usepackage[
   letterpaper,
   left=0.6in,
@@ -13,12 +11,10 @@
   footskip=0.35in
 ]{geometry}
 
-%% ------------------------------------------------------------------ font: Google Sans (compile with XeLaTeX)
 \usepackage{fontspec}
 \setmainfont{Google Sans}
 \usepackage{microtype}
 
-%% ------------------------------------------------------------------ packages
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
@@ -40,7 +36,7 @@
 \setlist[itemize]{leftmargin=1.2em,itemsep=2pt,topsep=3pt,parsep=0pt}
 \setlist[enumerate]{leftmargin=1.4em,itemsep=2pt,topsep=3pt,parsep=0pt}
 \setlength{\parskip}{4pt}
-\setlength{\emergencystretch}{2em}   % avoid overfull lines from long numbers
+\setlength{\emergencystretch}{2em}
 
 \pagestyle{plain}
 
@@ -69,7 +65,7 @@
 
 \taskbanner{Task 1}{Forecasting Across Heterogeneous Sensors}
 
-%% =====================================================================================
+
 \section*{Response 1A}
 
 \subsection*{Prediction, written before running Output 1.1}
@@ -138,7 +134,7 @@ I also noticed that the spread across products inside a single model is relative
 
 \newpage
 
-%% =====================================================================================
+
 \section*{Response 1B}
 
 In Part 1, the ridge forecasters all use the same closed-form least-squares equation (Equation 8 from the handout):
@@ -204,7 +200,7 @@ While Ridge applies the exact same mathematical function $\hat{W}$ to every wind
 
 \newpage
 
-%% =====================================================================================
+
 \section*{Response 2}
 
 \subsection*{Selected width: 41 and what the outputs show}
@@ -295,7 +291,7 @@ An alternative could be a local polynomial trend fit. This would assume "locally
 
 \vspace{10pt}
 
-%% =====================================================================================
+
 \section*{Response 3}
 
 My implementation of \texttt{aggregate\_delays} returns $z_t = \sum_j \alpha_j\, v_{(t-\tau_j) \bmod L}$ per example. I tested it on the provided worked example ($v = [10,20,30,40]$, delays $[1,3]$, weights $[3/4,1/4]$) and my output was $[35,15,25,25]$. Checking $z_0 = \tfrac34 v_3 + \tfrac14 v_1 = 35$ matches the expected value, confirming the shift correctly runs backwards in time. The gradient tests also passed. Output 3.1 confirms the supplied FFT scorer works: on $q = k = [1,3,1,3]$ the scores are $[4,-4,4,-4]$, matching direct circular correlation.
@@ -329,7 +325,7 @@ This delay mixer assumes the signal is strictly periodic. If there was a sudden 
 
 \vspace{10pt}
 
-%% =====================================================================================
+
 \section*{Response 4}
 
 \subsection*{(a) Prediction, written before running Output 4.1}
@@ -418,7 +414,7 @@ Output 4.3 (Table \ref{tab:out43}) confirms that this was the right choice. Both
 
 \taskbanner{Task 2}{Leaderboard Challenge: an Autoformer for the 168-step block}
 
-%% =====================================================================================
+
 \section*{1. The data and the idea behind my approach}
 
 The series has 43{,}656 observed steps. The mean is 98, the standard deviation is 91, the maximum is 994, and the level can change a lot within one week. Figure \ref{fig:data} shows that the autocorrelation of the target is 0.97 at lag 1 and 0.40 at lag 24, but only 0.02 at lag 96. By the time we are 96 steps ahead, the past values say almost nothing about the next one, and we have to predict 168 steps.
@@ -434,7 +430,7 @@ Two simple baselines make this concrete (Table \ref{tab:placement}). Repeating t
 
 The manual says that the optional file covers the 168 hidden steps too. After discussing it with the TA, I treat the task as {estimating $y$ from the conditions during those steps}, instead of extending the past of $y$ forward. In other words, ``given the conditions, what value will $y$ take?''. Everything below is about making an Autoformer do this well, using as few special tricks as possible.
 
-%% =====================================================================================
+
 \section*{2. Validation setup}
 
 The leaderboard gives only one score, on one block of 168 steps, and a single block is a noisy draw (in my own validation the RMSE of single blocks ranges from about 27 to 93). I did not want to tune on it, so I built my own validation instead.
@@ -446,7 +442,7 @@ The leaderboard gives only one score, on one block of 168 steps, and a single bl
 \item \textbf{Seeds.} Single runs are noisy: the same configuration moves by about $\pm$1 RMSE between seeds. So every comparison uses 3 seeds, and I report the mean $\pm$ the standard deviation over seeds. I do not read much into differences smaller than this.
 \end{itemize}
 
-%% =====================================================================================
+
 \section*{3. Data processing and features}
 
 \textbf{Transforms.} The target is positive and heavy tailed, so I model $\log(1+y)$ and convert back at the end (this choice is tested in Section 5). Columns D, E and F are skewed, so they also get $\log(1+x)$. All covariate channels are standardised.
@@ -474,7 +470,7 @@ The leaderboard gives only one score, on one block of 168 steps, and a single bl
 
 Looking at Table \ref{tab:features}, the two features that matter are the rate recovered from column D and the rolling means: removing either costs 2.6 RMSE, which is larger than the seed noise, so I kept both. Using 7 rolling means instead of 3 does not help (62.9 against 62.2), so I kept 3. The extra ``steps since the last drop'' column is no better (61.8). Leaving the interpolated steps out of the {training} loss makes no measurable difference either (61.6 against 62.2), so I dropped that step to keep the pipeline simple; I still exclude them from scoring.
 
-%% =====================================================================================
+
 \section*{4. The model}
 
 The model is an {encoder-only} Autoformer in a nowcast form: the optional file covers the hidden week as well as the history, so the network reads the covariate channels of the 168 steps it has to predict and emits one value per step. There is no decoder and no recurrence. Inside every block sit the two Autoformer mechanisms, an auto-correlation mixer and a series decomposition, and everything the decompositions remove is accumulated and added back at the end rather than thrown away.
@@ -494,7 +490,6 @@ There are three read-outs on top of the encoder stream, and all three start at z
 \begin{tikzpicture}[font=\small, >=stealth,
   box/.style={draw, rounded corners=2pt, align=center, inner sep=4pt, minimum height=9mm},
   sm/.style={draw, rounded corners=2pt, align=center, inner sep=3pt, minimum height=8mm, font=\footnotesize}]
-% ---- encoder row
 \node[box] (in) at (0,0) {Covariates over the\\168 steps to predict};
 \node[box, right=8mm of in] (emb) {Convolution\\embedding};
 \node[sm, right=10mm of emb] (ac) {Auto-\\correlation};
@@ -505,14 +500,12 @@ There are three read-outs on top of the encoder stream, and all three start at z
       label={[font=\footnotesize]above:encoder block, 2 or 3 of these}] (blk) {};
 \draw[->] (in) -- (emb); \draw[->] (emb) -- (blk.west);
 \draw[->] (ac) -- (d1); \draw[->] (d1) -- (ff); \draw[->] (ff) -- (d2);
-% ---- read-out row, placed well below to avoid crossings
 \node[box, below=25mm of ff] (fast) {Layer norm,\\per-step linear};
 \node[box, left=26mm of fast] (slow) {Per-step linear on\\the slow parts};
 \node[box, left=71.5mm of fast] (win) {Per-step linear on the\\covariate means of the\\window, $+$ trend bridge};
 \draw[->] (d2.south) |- ++(0,-14mm) -| node[pos=0.72,right, font=\footnotesize]{fast part} (fast.north);
 \draw[->] (d1.south) -- node[pos=0.5, left=1mm, font=\footnotesize]{slow parts} ++(0,-18mm) coordinate (sdeg) -- (slow.north |- sdeg) -- (slow.north);
 \draw[->] (in.south) -- node[pos=0.5, right=1mm, font=\footnotesize]{summary of the window} ++(0,-22mm) coordinate (wdeg) -- (win.north |- wdeg) -- (win.north);
-% ---- add + output
 \node[box, below=13mm of slow] (add) {add};
 \node[box, below=8mm of add] (exp) {convert back to\\original units};
 \node[box, left=16mm of exp] (out) {168 predictions};
@@ -520,7 +513,6 @@ There are three read-outs on top of the encoder stream, and all three start at z
 \draw[->] (slow.south) -- ++(0,-3mm) -- (add.north);
 \draw[->] ([xshift=-6mm]win.south) -- ++(0,-2.5mm) -| (add.north west);
 \draw[->] (add) -- (exp); \draw[->] (exp) -- (out);
-% ---- bridge note
 \node[sm, below=15mm of win, xshift=-14mm, font=\footnotesize] (br) {means of $\log(1+y)$ over\\the last 1/6/24/168 steps};
 \draw[->] (br.north) -- ([xshift=-14mm]win.south);
 \end{tikzpicture}}
@@ -539,7 +531,7 @@ There are three read-outs on top of the encoder stream, and all three start at z
 
 \textbf{Training.} AdamW (learning rate $10^{-3}$, one-cycle schedule, weight decay $10^{-4}$), batch size 128, gradient clipping at 1. Training windows are 168-step stretches of the training years, starting every 4 steps, which is about 10{,}900 windows per fold. One epoch is one pass over these windows. 15 epochs is enough: 25 is within noise, and since every epoch is charged in the leaderboard score, shorter training is a free gain.
 
-%% =====================================================================================
+
 \section*{5. Experiments}
 
 \subsection*{5.1 Does the optional file help?}
@@ -580,35 +572,6 @@ This was the first design decision and it is settled by the data. The covariates
 \item \textbf{Series decomposition earned a smaller margin.} Removing it costs 0.6 (50.7 against 50.1), much less than the 1.5 I measured earlier. I kept it, and the requirement settles it either way, but I would not claim it is doing much on this series.
 \item \textbf{The log-scale output is not optional.} It is the single largest design choice in the model, though I did not re-test it on the final configuration because nothing came close to removing it in any earlier round.
 \end{itemize}
-
-% \subsection*{5.3 Three upgrades that did not work}
-
-% I spent most of this round trying to beat the model above, and all three attempts failed. I am writing them up because the negative results are the most useful thing I learned, and also because two of them looked like obvious wins from the outside :\_(
-
-% \textbf{An encoder--decoder, which is the textbook Autoformer.} Requirement~2.4 asks for a model that {is} an Autoformer, and does not require a decoder, so adding the canonical one is permitted. I built it properly: an encoder over a trailing 168-step covariate look-back, a decoder that cross-attends to that memory, and both decompositions' slow parts accumulated and read out separately (\texttt{encdec\_model.py}). It is worse on every fold, and on the hardest fold it diverges outright (146.5 pooled).
-
-% The divergence has a specific cause, and it is worth recording because it is a hazard of the output link rather than of the decoder. The prediction is $\exp(\cdot)-1$ of a standardised value, so a standard deviation of 6 in the standardised output already means a value far beyond anything in the series. About 0.2\% of steps do exactly that: in the worst run the forecast reaches 47{,}700 against a series maximum of 994, and those few steps dominate the pooled squared error. Clamping the standardised output removes the explosion (146.5 $\to$ 55.0) but the decoder is still 5 RMSE behind, so this is not only an optimisation problem.
-
-% \textbf{Why the decoder is the wrong bias here.} I checked this before building it, and I should have trusted the check. The horizon is exactly one week, so the obvious upgrade is to feed the model last week's profile. It carries nothing: the correlation between a week's shape and the previous week's shape is $-0.05$, only 1.5\% of the within-week shape variance is shared between weeks, and the best shrinkage weight on last week's profile is exactly zero. A decoder that cross-attends to a look-back has nothing to attend to, and its extra path only adds ways to overfit. A control confirms this is the bias and not the size: making the {encoder-only} model wider (3 blocks, width 48) is also worse (50.95 against 50.09).
-
-% \textbf{Statistical preprocessing of the covariates.} A TA hinted that this would be the largest single win, and the diagnosis certainly looked real. Columns A, B and C carry only 60 to 69 distinct values, and E and F are sparse counters: E is exactly zero on 99.2\% of steps with skew 19.5 and kurtosis 452. After standardisation E spans $z\in[-0.1,\,+35.4]$, so almost every step reads as baseline while a handful own the whole scale. And E is genuinely informative: when it fires, the mean of $y$ is 136.6 against 97.9, and the weeks containing a spike average 122.8 against 94.8.
-
-% I built four variants -- a rank/quantile transform to Gaussian, an explicit spike indicator, a magnitude-preserving $\log(1+E)$, and combinations. All four lose, by 0.8 to 1.8 RMSE, and the loss is concentrated on the hardest fold. The reason is that the information was already available: E fires on 0.8\% of steps, so an indicator is a nearly constant column, and the trailing means I already compute propagate it across 6, 24 and 168 steps. The rank transform additionally throws away the magnitude of each spike, replacing it with a global quantile code that is nearly the same value every time E fires. Adding these channels also widens the input embedding and dilutes a 15-epoch budget. I am reporting this as a negative result because it is one: the scaling pathology is real and measurable, but the model is not losing accuracy to it.
-
-% \subsection*{5.4 Where the error actually is}
-
-% Before trying anything else I split the model's squared error by magnitude, and this is the most useful measurement in the report.
-
-% \begin{figure}[htbp]
-% \centering
-% \includegraphics[width=0.95\linewidth]{fig_calibration.pdf}
-% \caption{Left: the squared error is concentrated. The worst 1\% of steps carry a quarter of it. Right: the forecast is already calibrated as in every prediction bin the true mean sits on the predicted mean, except at the very top where it is slightly over-confident.}
-% \label{fig:calibration}
-% \end{figure}
-
-% The worst 1\% of steps carry 24.7\% of the squared error, and making them perfect would take the pooled RMSE from 48.2 to 41.9. Because the horizon is only 168 steps, individual steps are heavily leveraged: a single step off by 100 costs 7.7 RMSE, one off by 200 costs 15.4. This is why a single-block leaderboard score is so volatile, and it is visible on the board itself, where my submission has one of the best sMAPE values and only a middling RMSE.
-
-% The natural reading is that the model under-predicts peaks, and indeed in the top bin of $y$ it is 218 low on average. That turns out to be the wrong conclusion. Under MSE the conditional {mean} is the optimal forecast, so a conditional-mean predictor {must} shrink like this; the only question is whether it shrinks by the right amount. Binning the predictions and comparing with the truth answers that directly (right panel of Figure~\ref{fig:calibration}): the model is calibrated across its whole range. The decisive test is to fit that mapping on four folds and apply it to the fifth, which makes the forecast {worse} (48.2 $\to$ 49.8). There is no free accuracy in a recalibration or a de-shrinkage, and I would rather say that than ship a peak correction that looks sophisticated and measurably hurts.
 
 \subsection*{5.3 The level question and the missing validation}
 
@@ -655,44 +618,9 @@ I saved the per-step predictions of every configuration I trained, so I could co
 
 This is not a complaint about the leaderboard, it is the reason requirement~2.4\#3 exists. A single 168-step block carries a standard deviation of roughly 20 RMSE between equally good models, so any single-block comparison, including mine, is mostly a measurement of luck. I did not tune on the board, and Table~\ref{tab:level} shows the one place where I could have exploited that temptation and did not. What I did get wrong was shipping a change whose validation number was flat-to-slightly-worse before I had checked it properly; I should have run that paired comparison before spending a submission on it.
 
-% %% =====================================================================================
-% \section*{6. Final model and submission}
-
-% \textbf{Ensemble.} The submitted prediction is the average of 20 models in original units: four configurations (Table \ref{tab:upgrade}) in five seeds each. The four members differ only in encoder depth and the width of the decomposition's moving average, plus one that uses the ten raw variables without the harmonics. They were trained on all the observed data and combined over the 169 rolling origins that cover the hidden week, with the $(h+1)^{-2}$ weighting described in Section 4.
-
-% \textbf{Declared cost.} I declare $P = 692{,}565$ trainable parameters and $E = 350$ epochs. Both are reproducible from \texttt{final.py} and \texttt{final\_spec.txt}, which rebuild every network and count its parameters again, and both are listed member by member in \texttt{submission\_manifest.txt}: three configurations at 15 epochs and one at 25, five seeds each.
-
-% It is worth being explicit about how little this costs. From the posted scores I can back out the leaderboard's coefficients as about $2\times10^{-9}$ per parameter and $5\times10^{-4}$ per epoch, which reproduce every score I have seen to three decimals. So my parameters cost 0.0014 and my epochs cost 0.175, a total of \textbf{0.176} against a spread of 63 to 120 RMSE on the board. The efficiency term was never the binding constraint on this problem. In particular the ranking reward is for training {length}, not model size: the entry in fourth place declared 7{,}938 parameters and 5 epochs and paid 0.0025. Had I had another submission I would have kept more seeds on fewer configurations rather than fewer seeds on more, since it is the epochs that are charged and the seeds that reduce variance.
-
-% \begin{figure}[htbp]
-% \centering
-% \includegraphics[width=0.95\linewidth]{fig_forecast.pdf}
-% \caption{The last 336 observed steps and the submitted forecast, the mean of the 20 final models with the range of the individual models shaded. The daily cycle is clearly recovered; the forecast is flatter than a typical week, which is the optimal behaviour for an RMSE criterion under a heavy-tailed target (Section 5.4).}
-% \label{fig:forecast}
-% \end{figure}
-
-% \subsection*{6.1 What I would do next}
-
-% The three things I tried all failed, and two of the questions I set out to answer turned out to have no positive answer once I had the right instrument. If I continued, the order would be:
-
-% \begin{enumerate}
-% \item \textbf{A validation set that matches the test.} The year folds answer the wrong question for anything about covariate shift. A split whose held-out blocks are selected to be as shifted as the hidden week would make the level and the peak questions answerable, and would be reusable for every future change.
-% \item \textbf{Train on the loss the leaderboard measures, per horizon.} RMSE is a single number over 168 steps and a handful of steps dominate it, but every member of my ensemble is trained to minimise the average squared error over all horizons equally. Re-weighting the loss by how much each horizon step actually contributes to the final RMSE would be the principled version of the peak correction that Section~\ref{fig:calibration} shows does not work as a post-hoc adjustment.
-% \item \textbf{More seeds, fewer configurations.} Section~\ref{tab:upgrade} shows ensembling is the only reliable gain left, and Section~6 notes that epochs are the charged resource. Eight seeds on two configurations would cut the epoch penalty and keep most of the variance reduction.
-% \end{enumerate}
-
-% \subsection*{6.2 Honest caveats}
-
-% \begin{itemize}
-% \item The member selection and the 49.0 in Table \ref{tab:upgrade} are both measured on the same five folds used to report them, so both are mildly optimistic. The leave-one-fold-out check in Section~5.6 puts the selection bias at about 0.15, and the unselected four-member average is the number I would stand behind.
-% \item The five folds are not exchangeable; the first is consistently the hardest, and it dominates the pooled number. The ranking of configurations is the same on the last fold, so the conclusions do not rest on it, but the absolute pooled figures do.
-% \item One block is a noisy draw (Section~5.7). I report my leaderboard RMSE as what it is and do not read anything into its ranking.
-% \item The $\exp$ output link can in principle diverge, and does in the encoder--decoder variant. It never fires in the submitted configuration over the 15 runs I validated, but the fragility is real and I would clamp the output if I were doing this again.
-% \end{itemize}
-
 \vspace{20pt}
 
-%% =====================================================================================
+
 \section*{Generative AI Declaration}
 
 \subsection*{Task 1}
